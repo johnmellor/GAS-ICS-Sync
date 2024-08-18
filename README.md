@@ -12,6 +12,7 @@ Main changes:
     -   `removePastEventsFromCalendar` from `true` to `false`
     -   `addAlerts` from `"yes"` to `"no"`
     -   `overrideVisibility` from `""` to `"default"`
+-   `sourceCalendars` now expects the target calendar to be specified as a calendar ID rather than a calendar name, and will no longer create the calendar if it doesn't yet exist.
 
 ## Setup instructions
 

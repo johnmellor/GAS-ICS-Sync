@@ -26,9 +26,9 @@ var sourceCalendars = [                // The ics/ical urls that you want to get
                                        // For instance: ["https://p24-calendars.icloud.com/holidays/us_en.ics", "US Holidays"]
                                        // Or with colors following mapping https://developers.google.com/apps-script/reference/calendar/event-color,
                                        // for instance: ["https://p24-calendars.icloud.com/holidays/us_en.ics", "US Holidays", "11"]
-  ["icsUrl1", "targetCalendar1"],
-  ["icsUrl2", "targetCalendar2"],
-  ["icsUrl3", "targetCalendar1"]
+  ["icsUrl1", "targetCalendarId1"],
+  ["icsUrl2", "targetCalendarId2"],
+  ["icsUrl3", "targetCalendarId1"]
 
 ];
 
@@ -136,7 +136,6 @@ var icsEventsIds = [];
 var calendarEventsMD5s = [];
 var recurringEvents = [];
 var targetCalendarId;
-var targetCalendarName;
 
 // Per-session global variables (must NOT be reset before processing each new calendar!)
 var addedEvents = [];
@@ -166,17 +165,15 @@ function startSync(){
     calendarEventsMD5s = [];
     recurringEvents = [];
 
-    targetCalendarName = calendar[0];
+    targetCalendarId = calendar[0];
     var sourceCalendarURLs = calendar[1];
     var vevents;
 
     //------------------------ Fetch URL items ------------------------
     var responses = fetchSourceCalendars(sourceCalendarURLs);
-    Logger.log("Syncing " + responses.length + " calendars to " + targetCalendarName);
+    Logger.log("Syncing " + responses.length + " calendars to " + targetCalendarId);
 
     //------------------------ Get target calendar information------------------------
-    var targetCalendar = setupTargetCalendar(targetCalendarName);
-    targetCalendarId = targetCalendar.id;
     Logger.log("Working on calendar: " + targetCalendarId);
 
     //------------------------ Parse existing events --------------------------
@@ -195,7 +192,7 @@ function startSync(){
         if (eventList != null)
           calendarEvents = [].concat(calendarEvents, eventList.items);
       }
-      Logger.log("Fetched " + calendarEvents.length + " existing events from " + targetCalendarName);
+      Logger.log("Fetched " + calendarEvents.length + " existing events from " + targetCalendarId);
       for (var i = 0; i < calendarEvents.length; i++){
         if (calendarEvents[i].extendedProperties != null){
           calendarEventsIds[i] = calendarEvents[i].extendedProperties.private["rec-id"] || calendarEvents[i].extendedProperties.private["id"];

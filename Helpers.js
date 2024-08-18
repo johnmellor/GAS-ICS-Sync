@@ -175,31 +175,6 @@ function fetchSourceCalendars(sourceCalendarURLs){
 }
 
 /**
- * Gets the user's Google Calendar with the specified name.
- * A new Calendar will be created if the user does not have a Calendar with the specified name.
- *
- * @param {string} targetCalendarName - The name of the calendar to return
- * @return {Calendar} The calendar retrieved or created
- */
-function setupTargetCalendar(targetCalendarName){
-  var targetCalendar = Calendar.CalendarList.list({showHidden: true, maxResults: 250}).items.filter(function(cal) {
-    return ((cal.summaryOverride || cal.summary) == targetCalendarName) &&
-                (cal.accessRole == "owner" || cal.accessRole == "writer");
-  })[0];
-
-  if(targetCalendar == null){
-    Logger.log("Creating Calendar: " + targetCalendarName);
-    targetCalendar = Calendar.newCalendar();
-    targetCalendar.summary = targetCalendarName;
-    targetCalendar.description = "Created by GAS";
-    targetCalendar.timeZone = Calendar.Settings.get("timezone").value;
-    targetCalendar = Calendar.Calendars.insert(targetCalendar);
-  }
-
-  return targetCalendar;
-}
-
-/**
  * Parses all sources using ical.js.
  * Registers all found timezones with TimezoneService.
  * Creates an Array with all events and adds the event-ids to the provided Array.
@@ -614,7 +589,7 @@ function processEvent(event, calendarTz){
           return Calendar.Events.update(newEvent, targetCalendarId, calendarEvents[index].id);
         }, defaultMaxRetries);
         if (newEvent != null && emailSummary){
-          modifiedEvents.push([[oldEvent.summary, newEvent.summary, oldEvent.start.date||oldEvent.start.dateTime, newEvent.start.date||newEvent.start.dateTime, oldEvent.end.date||oldEvent.end.dateTime, newEvent.end.date||newEvent.end.dateTime, oldEvent.location, newEvent.location, oldEvent.description, newEvent.description], targetCalendarName]);
+          modifiedEvents.push([[oldEvent.summary, newEvent.summary, oldEvent.start.date||oldEvent.start.dateTime, newEvent.start.date||newEvent.start.dateTime, oldEvent.end.date||oldEvent.end.dateTime, newEvent.end.date||newEvent.end.dateTime, oldEvent.location, newEvent.location, oldEvent.description, newEvent.description], targetCalendarId]);
         }
       }
     }
@@ -625,7 +600,7 @@ function processEvent(event, calendarTz){
           return Calendar.Events.insert(newEvent, targetCalendarId);
         }, defaultMaxRetries);
         if (newEvent != null && emailSummary){
-          addedEvents.push([[newEvent.summary, newEvent.start.date||newEvent.start.dateTime, newEvent.end.date||newEvent.end.dateTime, newEvent.location, newEvent.description], targetCalendarName]);
+          addedEvents.push([[newEvent.summary, newEvent.start.date||newEvent.start.dateTime, newEvent.end.date||newEvent.end.dateTime, newEvent.location, newEvent.description], targetCalendarId]);
         }
       }
     }
@@ -923,7 +898,7 @@ function processEventCleanup(){
         }, defaultMaxRetries);
 
         if (emailSummary){
-          removedEvents.push([[calendarEvents[i].summary, calendarEvents[i].start.date||calendarEvents[i].start.dateTime, calendarEvents[i].end.date||calendarEvents[i].end.dateTime, calendarEvents[i].location, calendarEvents[i].description], targetCalendarName]);
+          removedEvents.push([[calendarEvents[i].summary, calendarEvents[i].start.date||calendarEvents[i].start.dateTime, calendarEvents[i].end.date||calendarEvents[i].end.dateTime, calendarEvents[i].location, calendarEvents[i].description], targetCalendarId]);
         }
       }
     }
