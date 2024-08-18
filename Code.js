@@ -127,6 +127,8 @@ var sourceCalendars = [
 sourceCalendars = sourceCalendars.filter(
     ([icsUrl, targetCalendarId]) => icsUrl && targetCalendarId);
 
+var serviceAccountKeyJson_ = JSON.parse(scriptProperties_["service_account_key_json"]); // OPTIONAL: If you want to use a service account to create the calendar events, provide the JSON service account key here. If not, leave this null.
+
 var howFrequent = 5;                      // What interval (minutes) to run this script on to check for new events.  Any integer can be used, but will be rounded up to 5, 10, 15, 30 or to the nearest hour after that.. 60, 120, etc. 1440 (24 hours) is the maximum value.  Anything above that will be replaced with 1440.
 var addEventsToCalendar = true;           // If you turn this to "false", you can check the log (View > Logs) to make sure your events are being read correctly before turning this on
 var modifyExistingEvents = true;          // If you turn this to "false", any event in the feed that was modified after being added to the calendar will not update

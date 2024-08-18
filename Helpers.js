@@ -1,3 +1,41 @@
+/** Configures the OAuth library to authenticate with the service account. */
+function serviceAccountHeaders_() {
+  if (!serviceAccountKeyJson_) {
+    return null;
+  }
+  const service =
+      OAuth2
+      .createService("Calendar:" + serviceAccountKeyJson_.client_email)
+      .setTokenUrl("https://oauth2.googleapis.com/token")
+      .setPrivateKey(serviceAccountKeyJson_.private_key)
+      .setIssuer(serviceAccountKeyJson_.client_email)
+      .setSubject(serviceAccountKeyJson_.client_email)
+      .setScope("https://www.googleapis.com/auth/calendar")
+      .setPropertyStore(PropertiesService.getScriptProperties())
+      .setCache(CacheService.getScriptCache());
+  if (!service.hasAccess()) {
+    Logger.log("Service account access error: " + service.getLastError());
+    throw new Error("Service account access error: " + service.getLastError());
+  }
+  return {"Authorization": "Bearer " + service.getAccessToken()};
+}
+
+function Calendar_Events_insert(event, targetCalendarId) {
+  const headers = serviceAccountHeaders_();
+  if (!headers) {
+    return Calendar.Events.insert(event, targetCalendarId);
+  }
+  const url = `https://www.googleapis.com/calendar/v3/calendars/${targetCalendarId}/events`;
+  const response = UrlFetchApp.fetch(url, {
+    method: "post",
+    headers: headers,
+    contentType: "application/json",
+    payload: JSON.stringify(event),
+  });
+  const insertedEvent = JSON.parse(response.getContentText());
+  return insertedEvent;
+}
+
 /**
  * Formats the date and time according to the format specified in the configuration.
  *
@@ -597,7 +635,7 @@ function processEvent(event, calendarTz){
       if (addEventsToCalendar){
         Logger.log("Adding new event " + newEvent.extendedProperties.private["id"]);
         newEvent = callWithBackoff(function(){
-          return Calendar.Events.insert(newEvent, targetCalendarId);
+          return Calendar_Events_insert(newEvent, targetCalendarId);
         }, defaultMaxRetries);
         if (newEvent != null && emailSummary){
           addedEvents.push([[newEvent.summary, newEvent.start.date||newEvent.start.dateTime, newEvent.end.date||newEvent.end.dateTime, newEvent.location, newEvent.description], targetCalendarId]);
@@ -868,7 +906,7 @@ function processEventInstance(recEvent){
     if (addEventsToCalendar){
       Logger.log("No Instance matched, adding as new event!");
       callWithBackoff(function(){
-        Calendar.Events.insert(recEvent, targetCalendarId);
+        Calendar_Events_insert(recEvent, targetCalendarId);
       }, defaultMaxRetries);
     }
   }

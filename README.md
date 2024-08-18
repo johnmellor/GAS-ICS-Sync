@@ -16,6 +16,8 @@ Main changes:
 -   `sourceCalendars` has the option of reading values from the Script [Properties Service](https://developers.google.com/apps-script/reference/properties), to avoid hardcoding potentially secret URLs in source code, and allow easy runtime configuration.
 -   Don't ignore TLS certificate errors.
 -   Added `forceUnsafeSync` function to manually sync when the last sync failed.
+-   Added OAuth2.js (v1.43.0) from https://github.com/googleworkspace/apps-script-oauth2/blob/67cae4034d0936dbe90b95f74cddd1ad35d799fd/dist/OAuth2.gs
+-   Supports creating the events using a Google Cloud service account so that Google Calendar shows the event creator as `<service-account-id>@<gcp-project-id>.iam.gserviceaccount.com` rather than as the email address of the Google account that installs the Apps Script.
 
 ## Setup instructions
 
@@ -32,7 +34,7 @@ Main changes:
         ```sh
         echo "{\"scriptId\":\"YOUR_SCRIPT_ID_HERE\",\"rootDir\":\".\"}" > .clasp.json
         ```
-5.  Change lines 27-148 of `Code.js` to be the settings that you want to use.
+5.  Change lines 27-150 of `Code.js` to be the settings that you want to use.
 6.  Run `clasp push` to upload the scripts from this git repository to your Script project.
 7.  Run `clasp open` to open the Script project.
 8.  Add any necessary Script Properties (e.g. for `sourceCalendars`) in Project Settings.
