@@ -6,6 +6,7 @@ Forked from https://github.com/derekantrican/GAS-ICS-Sync.
 
 Main changes:
 -   This version is intended to be installed via [clasp](https://github.com/google/clasp) (which will rename *.js to *.gs when pushing).
+-   Reduced `oauthScopes` to minimize permissions (removed `"https://www.googleapis.com/auth/tasks"` and `"https://www.googleapis.com/auth/script.send_mail"` that I don't use).
 
 ## Setup instructions
 
