@@ -1,29 +1,29 @@
 # GAS-ICS-Sync
 
-### ⚠️⚠️ This project is looking for contributors and people to help answer questions! Please message @developers on the Discord! ⚠️⚠️
+Apps Script project to sync ICS/iCal calendars to one or more Google calendars. Unlike Google Calendar's native ICS import, this can sync up to every 5 minutes, and can merge multiple ICS calendars into one Google calendar.
 
-This is a standalone script (that consists of multiple files). The purpose is to sync ics/ical calendars to Google Calendar. Google Calendar *can* already do this, but updates only happen once every 12 or even 24 hrs. This script can be run much more frequently.
+Forked from https://github.com/derekantrican/GAS-ICS-Sync.
 
-[If you want to use this, please copy the script from here](https://script.google.com/d/1BOk8MDLbLaHh6SwG1M1tsgNXjkcC-79LE0QoipRuTDxbO3fMVvqoROQD/edit?newcopy=true)
+Main changes:
+-   This version is intended to be installed via [clasp](https://github.com/google/clasp) (which will rename *.js to *.gs when pushing).
 
-**To make a copy in the new Google Apps Script interface:**
-1. Go to the project overview icon on the left (looks like this: ⓘ)
-2. Click the "copy" icon on the top right (looks like two files on top of each other)
+## Setup instructions
 
-**NOTE:** If too many people are accessing the file at the same time, Google may lock you out. You can follow these instructions to set up the script: https://github.com/derekantrican/GAS-ICS-Sync/wiki/Setting-up-the-script-manually
+1.  [Install clasp](https://github.com/google/clasp#install).
+2.  Enable the Google Apps Script API in https://script.google.com/home/usersettings.
+3.  Run `clasp login`.
+4.  Either:
 
----------------
+    1)  Create a new Script project with `clasp create --type standalone "GAS ICS Sync"` (name doesn't matter);
 
-### Questions? Comments? Anything else?
-[Join the Discord!](https://discord.gg/DRBpb4k)
+    Or:
 
-![Discord](https://img.shields.io/discord/612735135120490496)
-
-----------------
-
-### Contributing
-
-If you would like to contribute to this repository, please fork the repository, make your changes, and start a pull request. If your pull request is approved, I will add you as a contributer directly to the repository
-
-
-**If you would like to fund an issue, you can do that through here: https://issuehunt.io/repos/136078981/**
+    2)  Link this repository to your existing Script project (replace `YOUR_SCRIPT_ID_HERE`) using:
+        ```sh
+        echo "{\"scriptId\":\"YOUR_SCRIPT_ID_HERE\",\"rootDir\":\".\"}" > .clasp.json
+        ```
+5.  Change lines 25-53 of `Code.js` to be the settings that you want to use.
+6.  Run `clasp push` to upload the scripts from this git repository to your Script project.
+7.  Run `clasp open` to open the Script project.
+8.  Add any necessary Script Properties (e.g. for `sourceCalendars`) in Project Settings.
+9.  Go back to the Apps Script Editor and follow the installation instructions in `Code.gs` starting from step "3) Install:". See also the uninstallation instructions there if necessary later.
