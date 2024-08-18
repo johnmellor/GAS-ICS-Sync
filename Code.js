@@ -346,3 +346,8 @@ function startSync(){
     throw new Error('The sync operation produced errors. See log for details.');
   }
 }
+
+function forceUnsafeSync() {
+  PropertiesService.getUserProperties().setProperty("LastRun", 0);
+  startSync();
+}
