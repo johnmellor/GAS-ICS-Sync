@@ -13,6 +13,7 @@ Main changes:
     -   `addAlerts` from `"yes"` to `"no"`
     -   `overrideVisibility` from `""` to `"default"`
 -   `sourceCalendars` now expects the target calendar to be specified as a calendar ID rather than a calendar name, and will no longer create the calendar if it doesn't yet exist.
+-   `sourceCalendars` has the option of reading values from the Script [Properties Service](https://developers.google.com/apps-script/reference/properties), to avoid hardcoding potentially secret URLs in source code, and allow easy runtime configuration.
 
 ## Setup instructions
 
@@ -29,7 +30,7 @@ Main changes:
         ```sh
         echo "{\"scriptId\":\"YOUR_SCRIPT_ID_HERE\",\"rootDir\":\".\"}" > .clasp.json
         ```
-5.  Change lines 25-53 of `Code.js` to be the settings that you want to use.
+5.  Change lines 27-148 of `Code.js` to be the settings that you want to use.
 6.  Run `clasp push` to upload the scripts from this git repository to your Script project.
 7.  Run `clasp open` to open the Script project.
 8.  Add any necessary Script Properties (e.g. for `sourceCalendars`) in Project Settings.

@@ -22,15 +22,110 @@
 *=========================================
 */
 
-var sourceCalendars = [                // The ics/ical urls that you want to get events from along with their target calendars (list a new row for each mapping of ICS url to Google Calendar)
-                                       // For instance: ["https://p24-calendars.icloud.com/holidays/us_en.ics", "US Holidays"]
-                                       // Or with colors following mapping https://developers.google.com/apps-script/reference/calendar/event-color,
-                                       // for instance: ["https://p24-calendars.icloud.com/holidays/us_en.ics", "US Holidays", "11"]
-  ["icsUrl1", "targetCalendarId1"],
-  ["icsUrl2", "targetCalendarId2"],
-  ["icsUrl3", "targetCalendarId1"]
+const scriptProperties_ = PropertiesService.getScriptProperties().getProperties();
 
+var sourceCalendars = [
+  // The ics/ical urls that you want to get events from along with their target calendar IDs (list a new row for each mapping of ICS url to Google Calendar)
+  // For instance: ["https://p24-calendars.icloud.com/holidays/us_en.ics", "abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789@group.calendar.google.com"]
+  // Or with colors following mapping https://developers.google.com/apps-script/reference/calendar/event-color,
+  // for instance: ["https://p24-calendars.icloud.com/holidays/us_en.ics", "abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789@group.calendar.google.com", "11"]
+  // The defaults below allow these to be configured using the GAS Project Settings > Script
+  // Properties. If you use this approach, you may want to create corresponding properties in
+  // Project Settings like `calendar_A_source_1_name` and `calendar_A_target_name` to help you
+  // remember which is which (for information only - this script wouldn't read them).
+  [scriptProperties_["calendar_A_source_1_ics"], scriptProperties_["calendar_A_target_calendar_id"]],
+  [scriptProperties_["calendar_A_source_2_ics"], scriptProperties_["calendar_A_target_calendar_id"]],
+  [scriptProperties_["calendar_A_source_3_ics"], scriptProperties_["calendar_A_target_calendar_id"]],
+  [scriptProperties_["calendar_A_source_4_ics"], scriptProperties_["calendar_A_target_calendar_id"]],
+  [scriptProperties_["calendar_A_source_5_ics"], scriptProperties_["calendar_A_target_calendar_id"]],
+  [scriptProperties_["calendar_A_source_6_ics"], scriptProperties_["calendar_A_target_calendar_id"]],
+  [scriptProperties_["calendar_A_source_7_ics"], scriptProperties_["calendar_A_target_calendar_id"]],
+  [scriptProperties_["calendar_A_source_8_ics"], scriptProperties_["calendar_A_target_calendar_id"]],
+  [scriptProperties_["calendar_A_source_9_ics"], scriptProperties_["calendar_A_target_calendar_id"]],
+  [scriptProperties_["calendar_B_source_1_ics"], scriptProperties_["calendar_B_target_calendar_id"]],
+  [scriptProperties_["calendar_B_source_2_ics"], scriptProperties_["calendar_B_target_calendar_id"]],
+  [scriptProperties_["calendar_B_source_3_ics"], scriptProperties_["calendar_B_target_calendar_id"]],
+  [scriptProperties_["calendar_B_source_4_ics"], scriptProperties_["calendar_B_target_calendar_id"]],
+  [scriptProperties_["calendar_B_source_5_ics"], scriptProperties_["calendar_B_target_calendar_id"]],
+  [scriptProperties_["calendar_B_source_6_ics"], scriptProperties_["calendar_B_target_calendar_id"]],
+  [scriptProperties_["calendar_B_source_7_ics"], scriptProperties_["calendar_B_target_calendar_id"]],
+  [scriptProperties_["calendar_B_source_8_ics"], scriptProperties_["calendar_B_target_calendar_id"]],
+  [scriptProperties_["calendar_B_source_9_ics"], scriptProperties_["calendar_B_target_calendar_id"]],
+  [scriptProperties_["calendar_C_source_1_ics"], scriptProperties_["calendar_C_target_calendar_id"]],
+  [scriptProperties_["calendar_C_source_2_ics"], scriptProperties_["calendar_C_target_calendar_id"]],
+  [scriptProperties_["calendar_C_source_3_ics"], scriptProperties_["calendar_C_target_calendar_id"]],
+  [scriptProperties_["calendar_C_source_4_ics"], scriptProperties_["calendar_C_target_calendar_id"]],
+  [scriptProperties_["calendar_C_source_5_ics"], scriptProperties_["calendar_C_target_calendar_id"]],
+  [scriptProperties_["calendar_C_source_6_ics"], scriptProperties_["calendar_C_target_calendar_id"]],
+  [scriptProperties_["calendar_C_source_7_ics"], scriptProperties_["calendar_C_target_calendar_id"]],
+  [scriptProperties_["calendar_C_source_8_ics"], scriptProperties_["calendar_C_target_calendar_id"]],
+  [scriptProperties_["calendar_C_source_9_ics"], scriptProperties_["calendar_C_target_calendar_id"]],
+  [scriptProperties_["calendar_D_source_1_ics"], scriptProperties_["calendar_D_target_calendar_id"]],
+  [scriptProperties_["calendar_D_source_2_ics"], scriptProperties_["calendar_D_target_calendar_id"]],
+  [scriptProperties_["calendar_D_source_3_ics"], scriptProperties_["calendar_D_target_calendar_id"]],
+  [scriptProperties_["calendar_D_source_4_ics"], scriptProperties_["calendar_D_target_calendar_id"]],
+  [scriptProperties_["calendar_D_source_5_ics"], scriptProperties_["calendar_D_target_calendar_id"]],
+  [scriptProperties_["calendar_D_source_6_ics"], scriptProperties_["calendar_D_target_calendar_id"]],
+  [scriptProperties_["calendar_D_source_7_ics"], scriptProperties_["calendar_D_target_calendar_id"]],
+  [scriptProperties_["calendar_D_source_8_ics"], scriptProperties_["calendar_D_target_calendar_id"]],
+  [scriptProperties_["calendar_D_source_9_ics"], scriptProperties_["calendar_D_target_calendar_id"]],
+  [scriptProperties_["calendar_E_source_1_ics"], scriptProperties_["calendar_E_target_calendar_id"]],
+  [scriptProperties_["calendar_E_source_2_ics"], scriptProperties_["calendar_E_target_calendar_id"]],
+  [scriptProperties_["calendar_E_source_3_ics"], scriptProperties_["calendar_E_target_calendar_id"]],
+  [scriptProperties_["calendar_E_source_4_ics"], scriptProperties_["calendar_E_target_calendar_id"]],
+  [scriptProperties_["calendar_E_source_5_ics"], scriptProperties_["calendar_E_target_calendar_id"]],
+  [scriptProperties_["calendar_E_source_6_ics"], scriptProperties_["calendar_E_target_calendar_id"]],
+  [scriptProperties_["calendar_E_source_7_ics"], scriptProperties_["calendar_E_target_calendar_id"]],
+  [scriptProperties_["calendar_E_source_8_ics"], scriptProperties_["calendar_E_target_calendar_id"]],
+  [scriptProperties_["calendar_E_source_9_ics"], scriptProperties_["calendar_E_target_calendar_id"]],
+  [scriptProperties_["calendar_F_source_1_ics"], scriptProperties_["calendar_F_target_calendar_id"]],
+  [scriptProperties_["calendar_F_source_2_ics"], scriptProperties_["calendar_F_target_calendar_id"]],
+  [scriptProperties_["calendar_F_source_3_ics"], scriptProperties_["calendar_F_target_calendar_id"]],
+  [scriptProperties_["calendar_F_source_4_ics"], scriptProperties_["calendar_F_target_calendar_id"]],
+  [scriptProperties_["calendar_F_source_5_ics"], scriptProperties_["calendar_F_target_calendar_id"]],
+  [scriptProperties_["calendar_F_source_6_ics"], scriptProperties_["calendar_F_target_calendar_id"]],
+  [scriptProperties_["calendar_F_source_7_ics"], scriptProperties_["calendar_F_target_calendar_id"]],
+  [scriptProperties_["calendar_F_source_8_ics"], scriptProperties_["calendar_F_target_calendar_id"]],
+  [scriptProperties_["calendar_F_source_9_ics"], scriptProperties_["calendar_F_target_calendar_id"]],
+  [scriptProperties_["calendar_G_source_1_ics"], scriptProperties_["calendar_G_target_calendar_id"]],
+  [scriptProperties_["calendar_G_source_2_ics"], scriptProperties_["calendar_G_target_calendar_id"]],
+  [scriptProperties_["calendar_G_source_3_ics"], scriptProperties_["calendar_G_target_calendar_id"]],
+  [scriptProperties_["calendar_G_source_4_ics"], scriptProperties_["calendar_G_target_calendar_id"]],
+  [scriptProperties_["calendar_G_source_5_ics"], scriptProperties_["calendar_G_target_calendar_id"]],
+  [scriptProperties_["calendar_G_source_6_ics"], scriptProperties_["calendar_G_target_calendar_id"]],
+  [scriptProperties_["calendar_G_source_7_ics"], scriptProperties_["calendar_G_target_calendar_id"]],
+  [scriptProperties_["calendar_G_source_8_ics"], scriptProperties_["calendar_G_target_calendar_id"]],
+  [scriptProperties_["calendar_G_source_9_ics"], scriptProperties_["calendar_G_target_calendar_id"]],
+  [scriptProperties_["calendar_H_source_1_ics"], scriptProperties_["calendar_H_target_calendar_id"]],
+  [scriptProperties_["calendar_H_source_2_ics"], scriptProperties_["calendar_H_target_calendar_id"]],
+  [scriptProperties_["calendar_H_source_3_ics"], scriptProperties_["calendar_H_target_calendar_id"]],
+  [scriptProperties_["calendar_H_source_4_ics"], scriptProperties_["calendar_H_target_calendar_id"]],
+  [scriptProperties_["calendar_H_source_5_ics"], scriptProperties_["calendar_H_target_calendar_id"]],
+  [scriptProperties_["calendar_H_source_6_ics"], scriptProperties_["calendar_H_target_calendar_id"]],
+  [scriptProperties_["calendar_H_source_7_ics"], scriptProperties_["calendar_H_target_calendar_id"]],
+  [scriptProperties_["calendar_H_source_8_ics"], scriptProperties_["calendar_H_target_calendar_id"]],
+  [scriptProperties_["calendar_H_source_9_ics"], scriptProperties_["calendar_H_target_calendar_id"]],
+  [scriptProperties_["calendar_I_source_1_ics"], scriptProperties_["calendar_I_target_calendar_id"]],
+  [scriptProperties_["calendar_I_source_2_ics"], scriptProperties_["calendar_I_target_calendar_id"]],
+  [scriptProperties_["calendar_I_source_3_ics"], scriptProperties_["calendar_I_target_calendar_id"]],
+  [scriptProperties_["calendar_I_source_4_ics"], scriptProperties_["calendar_I_target_calendar_id"]],
+  [scriptProperties_["calendar_I_source_5_ics"], scriptProperties_["calendar_I_target_calendar_id"]],
+  [scriptProperties_["calendar_I_source_6_ics"], scriptProperties_["calendar_I_target_calendar_id"]],
+  [scriptProperties_["calendar_I_source_7_ics"], scriptProperties_["calendar_I_target_calendar_id"]],
+  [scriptProperties_["calendar_I_source_8_ics"], scriptProperties_["calendar_I_target_calendar_id"]],
+  [scriptProperties_["calendar_I_source_9_ics"], scriptProperties_["calendar_I_target_calendar_id"]],
+  [scriptProperties_["calendar_J_source_1_ics"], scriptProperties_["calendar_J_target_calendar_id"]],
+  [scriptProperties_["calendar_J_source_2_ics"], scriptProperties_["calendar_J_target_calendar_id"]],
+  [scriptProperties_["calendar_J_source_3_ics"], scriptProperties_["calendar_J_target_calendar_id"]],
+  [scriptProperties_["calendar_J_source_4_ics"], scriptProperties_["calendar_J_target_calendar_id"]],
+  [scriptProperties_["calendar_J_source_5_ics"], scriptProperties_["calendar_J_target_calendar_id"]],
+  [scriptProperties_["calendar_J_source_6_ics"], scriptProperties_["calendar_J_target_calendar_id"]],
+  [scriptProperties_["calendar_J_source_7_ics"], scriptProperties_["calendar_J_target_calendar_id"]],
+  [scriptProperties_["calendar_J_source_8_ics"], scriptProperties_["calendar_J_target_calendar_id"]],
+  [scriptProperties_["calendar_J_source_9_ics"], scriptProperties_["calendar_J_target_calendar_id"]],
 ];
+sourceCalendars = sourceCalendars.filter(
+    ([icsUrl, targetCalendarId]) => icsUrl && targetCalendarId);
 
 var howFrequent = 5;                      // What interval (minutes) to run this script on to check for new events.  Any integer can be used, but will be rounded up to 5, 10, 15, 30 or to the nearest hour after that.. 60, 120, etc. 1440 (24 hours) is the maximum value.  Anything above that will be replaced with 1440.
 var addEventsToCalendar = true;           // If you turn this to "false", you can check the log (View > Logs) to make sure your events are being read correctly before turning this on
