@@ -135,7 +135,7 @@ function fetchSourceCalendars(sourceCalendarURLs){
 
     try {
       callWithBackoff(function() {
-        var urlResponse = UrlFetchApp.fetch(url, { 'validateHttpsCertificates' : false, 'muteHttpExceptions' : true });
+        var urlResponse = UrlFetchApp.fetch(url, { "muteHttpExceptions": true });
         if (urlResponse.getResponseCode() == 200){
           var icsContent = urlResponse.getContentText()
           const icsRegex = RegExp("(BEGIN:VCALENDAR.*?END:VCALENDAR)", "s")

@@ -14,6 +14,7 @@ Main changes:
     -   `overrideVisibility` from `""` to `"default"`
 -   `sourceCalendars` now expects the target calendar to be specified as a calendar ID rather than a calendar name, and will no longer create the calendar if it doesn't yet exist.
 -   `sourceCalendars` has the option of reading values from the Script [Properties Service](https://developers.google.com/apps-script/reference/properties), to avoid hardcoding potentially secret URLs in source code, and allow easy runtime configuration.
+-   Don't ignore TLS certificate errors.
 
 ## Setup instructions
 
