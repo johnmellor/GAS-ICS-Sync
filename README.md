@@ -17,7 +17,7 @@ Main changes:
 -   Don't ignore TLS certificate errors.
 -   Added `forceUnsafeSync` function to manually sync when the last sync failed.
 -   Added OAuth2.js (v1.43.0) from https://github.com/googleworkspace/apps-script-oauth2/blob/67cae4034d0936dbe90b95f74cddd1ad35d799fd/dist/OAuth2.gs
--   Supports creating the events using a Google Cloud service account so that Google Calendar shows the event creator as `<service-account-id>@<gcp-project-id>.iam.gserviceaccount.com` rather than as the email address of the Google account that installs the Apps Script.
+-   Supports creating/updating/removing the events using a Google Cloud service account so that Google Calendar shows the event creator as `<service-account-id>@<gcp-project-id>.iam.gserviceaccount.com` rather than as the email address of the Google account that installs the Apps Script.
 
 ## Setup instructions
 

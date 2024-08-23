@@ -20,21 +20,60 @@ function serviceAccountHeaders_() {
   return {"Authorization": "Bearer " + service.getAccessToken()};
 }
 
-function Calendar_Events_insert(event, targetCalendarId) {
+function Calendar_Events_insert(event, calendarId) {
   const headers = serviceAccountHeaders_();
   if (!headers) {
-    return Calendar.Events.insert(event, targetCalendarId);
+    return Calendar.Events.insert(event, calendarId);
   }
-  const url = `https://www.googleapis.com/calendar/v3/calendars/${targetCalendarId}/events`;
+  const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events`;
   const response = UrlFetchApp.fetch(url, {
     method: "post",
     headers: headers,
     contentType: "application/json",
     payload: JSON.stringify(event),
   });
+  if (!String(200).startsWith("2")) {
+    Logger.log(`Calendar_Events_insert POST ${url} [${event.summary}] failed ${response.getResponseCode()}: ${response.getContentText()}`)
+  }
   const insertedEvent = JSON.parse(response.getContentText());
   return insertedEvent;
 }
+
+function Calendar_Events_update(event, calendarId, eventId) {
+  const headers = serviceAccountHeaders_();
+  if (!headers) {
+    return Calendar.Events.update(event, calendarId);
+  }
+  const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${eventId}`;
+  const response = UrlFetchApp.fetch(url, {
+    method: "put",
+    headers: headers,
+    contentType: "application/json",
+    payload: JSON.stringify(event),
+  });
+  if (!String(200).startsWith("2")) {
+    Logger.log(`Calendar_Events_update PUT ${url} [${event.summary}] failed ${response.getResponseCode()}: ${response.getContentText()}`)
+  }
+  const updatedEvent = JSON.parse(response.getContentText());
+  return updatedEvent;
+}
+
+function Calendar_Events_remove(calendarId, eventId) {
+  const headers = serviceAccountHeaders_();
+  if (!headers) {
+    Calendar.Events.remove(calendarId, eventId);
+  }
+  const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${eventId}`;
+  const response = UrlFetchApp.fetch(url, {
+    method: "delete",
+    headers: headers,
+    contentType: "application/json",
+  });
+  if (!String(200).startsWith("2")) {
+    Logger.log(`Calendar_Events_remove DELETE ${url} failed ${response.getResponseCode()}: ${response.getContentText()}`)
+  }
+}
+
 
 /**
  * Formats the date and time according to the format specified in the configuration.
@@ -624,7 +663,7 @@ function processEvent(event, calendarTz){
         oldEvent = calendarEvents[index]
         Logger.log("Updating existing event " + newEvent.extendedProperties.private["id"]);
         newEvent = callWithBackoff(function(){
-          return Calendar.Events.update(newEvent, targetCalendarId, calendarEvents[index].id);
+          return Calendar_Events_update(newEvent, targetCalendarId, calendarEvents[index].id);
         }, defaultMaxRetries);
         if (newEvent != null && emailSummary){
           modifiedEvents.push([[oldEvent.summary, newEvent.summary, oldEvent.start.date||oldEvent.start.dateTime, newEvent.start.date||newEvent.start.dateTime, oldEvent.end.date||oldEvent.end.dateTime, newEvent.end.date||newEvent.end.dateTime, oldEvent.location, newEvent.location, oldEvent.description, newEvent.description], targetCalendarId]);
@@ -898,7 +937,7 @@ function processEventInstance(recEvent){
     if (modifyExistingEvents){
       Logger.log("Updating existing event instance");
       callWithBackoff(function(){
-        Calendar.Events.update(recEvent, targetCalendarId, eventInstanceToPatch[0].id);
+        Calendar_Events_update(recEvent, targetCalendarId, eventInstanceToPatch[0].id);
       }, defaultMaxRetries);
     }
   }
@@ -932,7 +971,7 @@ function processEventCleanup(){
       {
         Logger.log("Deleting old event " + currentID);
         callWithBackoff(function(){
-          Calendar.Events.remove(targetCalendarId, calendarEvents[i].id);
+          Calendar_Events_remove(targetCalendarId, calendarEvents[i].id);
         }, defaultMaxRetries);
 
         if (emailSummary){
