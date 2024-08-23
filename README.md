@@ -8,7 +8,7 @@ Main changes:
 -   This version is intended to be installed via [clasp](https://github.com/google/clasp) (which will rename *.js to *.gs when pushing).
 -   Reduced `oauthScopes` to minimize permissions (removed `"https://www.googleapis.com/auth/tasks"` and `"https://www.googleapis.com/auth/script.send_mail"` that I don't use).
 -   Updated a few defaults:
-    -   `howFrequent` from `15` to `5` minutes
+    -   `howFrequent` from `15` to `10` minutes
     -   `removePastEventsFromCalendar` from `true` to `false`
     -   `addAlerts` from `"yes"` to `"no"`
     -   `overrideVisibility` from `""` to `"default"`
