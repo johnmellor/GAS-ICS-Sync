@@ -244,6 +244,7 @@ function fetchSourceCalendars(sourceCalendarURLs) {
       }, defaultMaxRetries);
     }
     catch (e) {
+      Logger.log(`[ERROR] Failed to fetch source calendar ${url}: ${e}`);
       reportOverallFailure = true;
     }
   }
@@ -668,7 +669,7 @@ function processEvent(event, calendarTz) {
           }, defaultMaxRetries);
         }
         catch (e) {
-          Logger.log(`Operation failed with error "${e}"`);
+          Logger.log(`[ERROR] Failed to update event ${newEvent.extendedProperties.private["id"]}: ${e}`);
           reportOverallFailure = true;
         }
         if (newEvent != null && emailSummary) {
@@ -685,7 +686,7 @@ function processEvent(event, calendarTz) {
           }, defaultMaxRetries);
         }
         catch (e) {
-          Logger.log(`Operation failed with error "${e}"`);
+          Logger.log(`[ERROR] Failed to insert event ${newEvent.extendedProperties.private["id"]}: ${e}`);
           reportOverallFailure = true;
         }
         if (newEvent != null && emailSummary) {
@@ -989,7 +990,7 @@ function processEventCleanup() {
         }, defaultMaxRetries);
       }
       catch (e) {
-        Logger.log(`Operation failed with error "${e}"`);
+        Logger.log(`[ERROR] Failed to remove event ${currentID}: ${e}`);
         reportOverallFailure = true;
       }
 
